@@ -25,7 +25,7 @@ C) HOW TO RUN:
   2. Unzip the data files and make sure their names match the description in part A.
   3. Run Get_THz_Image.m to obtain the THz image shape, save it as a PNG file.
   4. Run Rotation.m to align the pathology mask with respect to the THz image, save this output as a PNG file.
-     IMPORTANT: If black regions show up due to the rotation in the boundaries of the image, manually DELETE this regions before the next step.
+     IMPORTANT: If black regions show up due to the rotation in the boundaries of the image, manually DELETE these regions before the next step.
   5. Run main.m and follow the instructions in the code.
 
 For further details, please refer to: https://scholarworks.uark.edu/cgi/viewcontent.cgi?article=4276&context=etd
