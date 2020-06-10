@@ -1,4 +1,7 @@
 function Meshes=create_mesh(images)
+SS = get(0,'screensize');
+SS(3) = round(SS(3)*0.48);
+SS(4) = round(SS(4)*0.89);
 img_path=images.a;
 img_THz=images.b;
 waitfor(msgbox(sprintf('INSTRUCTIONS:\n1. LEFT CLICK TO SELECT A POINT\n2. RIGHT CLICK TO DELETE THE LAST POINT\n3. PRESS ENTER TO FINISH\nPLEASE CONSIDER THAT YOU CAN ONLY DELETE THE LAST CREATED POINT')))
@@ -12,10 +15,10 @@ num2=round(size(img_path,1)*0.005);
 while(op==0)
     if(TH==1)
         figure(1)
-        set(gcf,'position',[0 0 775 1000]);
+        set(gcf,'position',[0 45 SS(4) SS(3)]);
     else
         figure(2)
-        set(gcf,'position',[775 0 775 1000]);
+        set(gcf,'position',[SS(4) 45 SS(4) SS(3)]);
     end
     [a,b,button]=ginput(1);
     if (isempty(a) && TH==1) %Verifies if user pressed 'Enter' to stop
@@ -51,7 +54,7 @@ while(op==0)
             img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,3)=zeros(z1);
             imshow(img_THz);
             %Position the window
-            set(gcf,'position',[0 0 775 1000])
+            set(gcf,'position',[0 45 SS(4) SS(3)]);
             TH=0;
         else
             x_path(i)=round(a);
@@ -63,7 +66,7 @@ while(op==0)
             img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,3)=zeros(z);
             imshow(img_path);
             %Position the window
-            set(gcf,'position',[775 0 775 1000])
+            set(gcf,'position',[SS(4) 45 SS(4) SS(3)]);
             i=i+1;
             TH=1;
         end
