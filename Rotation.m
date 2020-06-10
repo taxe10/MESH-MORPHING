@@ -1,3 +1,6 @@
+% NOTE: If black regions show up in the output, manually DELETE these regions before morphing.
+% These regions come from the rotation of the image. After deleting these regions, make sure to
+% save the file in PNG format. 
 clear
 close all
 clc
