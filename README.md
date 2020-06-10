@@ -31,11 +31,15 @@ C) HOW TO RUN:
 For further details, please refer to: https://scholarworks.uark.edu/cgi/viewcontent.cgi?article=4276&context=etd
 At the end of the document, there is an USER MANUAL for this work.
 
-D) CHANGES:
+D) UPDATES:
+
+  1. The code now indicates if there is an OVERLAP in the mesh. If you get an OVERLAP warning, modify your mesh until you do not receive the warning anymore. Either ADD or DELETE control points until this warning clears up.
+
+E) CHANGES:
 
 To make any changes to the files, please refer to the comments included in the scripts.
 
-E) CONTACT INFORMATION:
+F) CONTACT INFORMATION:
 
 Tanny Chavez Esparza 
 
