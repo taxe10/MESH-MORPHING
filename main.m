@@ -7,6 +7,9 @@ THz_img_name=0;
 final=[];
 morphed_path=[];
 keep=0;
+SS = get(0,'screensize');
+SS(3) = round(SS(3)*0.48);
+SS(4) = round(SS(4)*0.89);
 while op==0
     filename=0;
     choice = questdlg('WHAT DO YOU NEED TO DO?', ...
@@ -17,12 +20,14 @@ while op==0
     end
     if(op==0)
         if keep==0
-            [Path_img_name,path_Path] = uigetfile('*.png','SELECT THE PATHOLOGY IMAGE');
+            [Path_img_name,path_Path] = uigetfile('*.png',...
+                'SELECT THE PATHOLOGY IMAGE');
             Path_img_name=strcat(path_Path,Path_img_name);
             if isempty(Path_img_name)
                 return
             end
-            [THz_img_name,path_THz] = uigetfile('*.png','SELECT THE TERAHERTZ IMAGE',path_Path);
+            [THz_img_name,path_THz] = uigetfile('*.png',...
+                'SELECT THE TERAHERTZ IMAGE',path_Path);
             THz_img_name=strcat(path_THz,THz_img_name);
             if isempty(THz_img_name)
                 return
@@ -75,7 +80,8 @@ while op==0
             end
             if(strcmp(load_op,'YES'))
                 while filename==0
-                    [filename,path] = uigetfile('*.mat','SELECT THE PRIOR DATA');
+                    [filename,path] = uigetfile('*.mat',...
+                        'SELECT THE PRIOR DATA');
                     filename=strcat(path,filename);
                 end
                 try
@@ -118,7 +124,8 @@ while op==0
                 while isempty(choice2)
                     choice2 = questdlg('DO YOU NEED TO?', ...
                         'MODIFY MESH', ...
-                        'ADD A NEW POINT','DELETE AN EXISTING POINT','DELETE AN EXISTING POINT');
+                        'ADD A NEW POINT','DELETE AN EXISTING POINT',...
+                        'DELETE AN EXISTING POINT');
                 end
                 if (strcmp(choice2,'DELETE AN EXISTING POINT'))
                     Meshes=delete_from_mesh(images,Meshes);
@@ -141,7 +148,8 @@ while op==0
             end
             save(path1,'Meshes');
             if (isempty(final)==0)
-                [filename,path] = uiputfile('*.mat','SAVE MATRIX AS:',path);
+                [filename,path] = uiputfile('*.mat','SAVE MATRIX AS:',...
+                    path);
                 if isempty(filename)
                     return
                 end
@@ -149,8 +157,10 @@ while op==0
                 matrix=final.a;
                 matrix_key_tissue=final.c;
                 matrix_key_number=final.d;
-                save(path1,'matrix','matrix_key_tissue','matrix_key_number');
-                [filename,path] = uiputfile('*.png','SAVE MORPHED PATHOLOGY AS:',path);
+                save(path1,'matrix','matrix_key_tissue',...
+                    'matrix_key_number');
+                [filename,path] = uiputfile('*.png',...
+                    'SAVE MORPHED PATHOLOGY AS:',path);
                 if isempty(filename)
                     return
                 end
@@ -158,7 +168,8 @@ while op==0
                 imwrite(final.b,path1);
             else
                 if(isempty(morphed_path)==0)
-                    [filename,path] = uiputfile('*.png','SAVE MORPHED PATHOLOGY AS:',path);
+                    [filename,path] = uiputfile('*.png',...
+                        'SAVE MORPHED PATHOLOGY AS:',path);
                     if isempty(filename)
                         return
                     end
