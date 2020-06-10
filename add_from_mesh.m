@@ -1,4 +1,7 @@
 function Meshes=add_from_mesh(images,Meshes)
+SS = get(0,'screensize');
+SS(3) = round(SS(3)*0.48);
+SS(4) = round(SS(4)*0.89);
 img_path=images.a;
 img_THz=images.b;
 img_path_ref=img_path; %Reference when deleting
@@ -24,11 +27,11 @@ for i=1:size(x_THz,2)
 end
 figure(1)
 imshow(img_THz);
-set(gcf,'position',[0 0 775 1000]);
+set(gcf,'position',[0 45 SS(4) SS(3)]);
 hold on; triplot(Mesh_THz,x_THz,y_THz,'Color', [0.4 0.4 0.4],'linewidth',3); hold off
 figure(2)
 imshow(img_path);
-set(gcf,'position',[775 0 775 1000]);
+set(gcf,'position',[SS(4) 45 SS(4) SS(3)]);
 hold on; triplot(Mesh_Path,x_path,y_path,'Color', [0.4 0.4 0.4],'linewidth',3); hold off
 waitfor(msgbox(sprintf('INSTRUCTIONS:\n1. LEFT CLICK TO ADD A POINT IN THE THZ IMAGE\n2. LEFT CLICK TO ADD A POINT IN THE PATHOLOGY IMAGE\nPLEASE CONSIDER THAT YOU CAN ONLY ADD ONE POINT AT A TIME')))
 add='YES';
@@ -36,10 +39,10 @@ while strcmp(add,'YES')
     i=size(x_THz,2)+1;
     figure(2)
     imshow(img_path);
-    set(gcf,'position',[775 0 775 1000]);
+    set(gcf,'position',[SS(4) 45 SS(4) SS(3)]);
     figure(1)
     imshow(img_THz);
-    set(gcf,'position',[0 0 775 1000]);
+    set(gcf,'position',[0 45 SS(4) SS(3)]);
     drawnow
     figure(1)
     [a,b]=ginput(1);
@@ -52,7 +55,7 @@ while strcmp(add,'YES')
     img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,3)=zeros(z);
     imshow(img_THz);
     %Position the window
-    set(gcf,'position',[0 0 775 1000])
+    set(gcf,'position',[0 45 SS(4) SS(3)]);
     drawnow;
     figure(2)
     [a,b]=ginput(1);
@@ -65,17 +68,17 @@ while strcmp(add,'YES')
     img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,3)=zeros(z);
     imshow(img_path);
     %Position the window
-    set(gcf,'position',[775 0 775 1000])
+    set(gcf,'position',[SS(4) 45 SS(4) SS(3)]);
     %Show current mesh
     figure(1)
     imshow(img_THz);
-    set(gcf,'position',[0 0 775 1000]);
+    set(gcf,'position',[0 45 SS(4) SS(3)]);
     Mesh_THz = delaunayTriangulation(x_THz',y_THz');
     Mesh_THz = Mesh_THz(:,:);
     hold on, triplot(Mesh_THz,x_THz,y_THz,'Color', [0.4 0.4 0.4],'linewidth',3), hold off
     figure(2)
     imshow(img_path);
-    set(gcf,'position',[775 0 775 1000]);
+    set(gcf,'position',[SS(4) 45 SS(4) SS(3)]);
     Mesh_Path = Mesh_THz(:,:);
     hold on, triplot(Mesh_Path,x_path,y_path,'Color', [0.4 0.4 0.4],'linewidth',3), hold off
     add='';
