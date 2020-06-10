@@ -3,7 +3,7 @@ A) DATASET: The dataset is available as .RAR files in 2 parts each. Make sure to
   1. Fresh THz data: Mouse5B_Fresh.mat
   2. Block THz data: Mouse5B_Block.mat
   3. Pathology Mask: Pathology_Mouse5B_Mask.png
-     This pathology mask identifies the regions within the pathology results, i.e. red blue represents cancer, red represents fat, are lumens, and white is the background.
+     This pathology mask identifies the regions within the pathology results, i.e. red blue represents cancer, red represents fat, black      corresponds to lumens, and white is the background.
 
 Dataset description:
 
