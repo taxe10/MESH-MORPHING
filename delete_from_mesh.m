@@ -1,129 +1,197 @@
-function Meshes=delete_from_mesh(images,Meshes)
-img_path=images.a;
-img_THz=images.b;
-img_path_ref=img_path; %Reference when deleting
-img_THz_ref=img_THz; %Reference when deleting
-x_THz=Meshes.a;
-y_THz=Meshes.b;
-Mesh_THz=Meshes.c;
-x_path=Meshes.d;
-y_path=Meshes.e;
-Mesh_Path=Meshes.f;
-num1=round(size(img_THz,1)*0.005);
-num2=round(size(img_path,1)*0.005);
-for i=1:size(x_THz,2)
-    %Colors the points in the meshes
-    z=size(img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,1));
-    img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,1)=zeros(z);
-    img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,2)=zeros(z);
-    img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,3)=zeros(z);
-    z=size(img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,1));
-    img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,1)=zeros(z);
-    img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,2)=zeros(z);
-    img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,3)=zeros(z);
-end
-figure(1)
-imshow(img_THz);
-set(gcf,'position',[0 0 775 1000]);
-hold on; triplot(Mesh_THz,x_THz,y_THz,'Color', [0.4 0.4 0.4],'linewidth',3); hold off
-figure(2)
-imshow(img_path);
-set(gcf,'position',[775 0 775 1000]);
-hold on; triplot(Mesh_Path,x_path,y_path,'Color', [0.4 0.4 0.4],'linewidth',3); hold off
-waitfor(msgbox(sprintf('INSTRUCTIONS:\n1. LEFT CLICK TO DELETE A POINT\n2. WHEN DELETING A CONTROL POINT FROM ONE IMAGE, THE PAIR CONTROL POINT IN THE OTHER IMAGE WILL BE REMOVED AS WELL\nYOU CAN ONLY DELETE ONE POINT AT A TIME')))
-del='YES';
-if (size(x_THz,2)<=3)
-    waitfor(msgbox(sprintf('YOU HAVE REACH THE MINIMUM NUMBER OF POINTS REQUIRED TO FORM A TRIANGULATION')));
-    del='NO';
-end
-while strcmp(del,'YES')
-    figure(1)
-    imshow(img_THz);
-    set(gcf,'position',[0 0 775 1000]);
-    figure(2)
-    imshow(img_path);
-    set(gcf,'position',[775 0 775 1000]);
-    fig='';
-    while isempty(fig)
-        fig = questdlg('FROM WHICH PICTURE DO YOU NEED TO DELETE A CONTROL POINT?', ...
-            'DELETE CONTROL POINTS', ...
-            'THZ IMAGE','PATHOLOGY IMAGE','PATHOLOGY IMAGE');
+op=0;
+Path_img_name=0;
+THz_img_name=0;
+final=[];
+morphed_path=[];
+keep=0;
+while op==0
+    filename=0;
+    choice = questdlg('WHAT DO YOU NEED TO DO?', ...
+        'MORPHING', ...
+        'CREATE MESH','MODIFY MESH','MORPH PATHOLOGY','MORPH PATHOLOGY');
+    if isempty(choice)
+        return
     end
-    if (strcmp(fig,'THZ IMAGE'))
-        drawnow;
-        figure(1)
-        [a,b]=ginput(1);
-        x=round(a);
-        y=round(b);
-        d = pdist([x,y;x_THz',y_THz'],'euclidean');
-        i=find(d==min(d(1:size(x_THz,2))));
-    else
-        drawnow;
-        figure(2)
-        [a,b]=ginput(1);
-        x=round(a);
-        y=round(b);
-        d = pdist([x,y;x_path',y_path'],'euclidean');
-        i=find(d==min(d(1:size(x_path,2))));
-    end
-    i=round(i);
-    %De-colors the selected point
-    img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,1)=img_THz_ref(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,1);
-    img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,2)=img_THz_ref(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,2);
-    img_THz(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,3)=img_THz_ref(y_THz(i)-num1:y_THz(i)+num1,x_THz(i)-num1:x_THz(i)+num1,3);
-    img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,1)=img_path_ref(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,1);
-    img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,2)=img_path_ref(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,2);
-    img_path(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,3)=img_path_ref(y_path(i)-num2:y_path(i)+num2,x_path(i)-num2:x_path(i)+num2,3);
-    x_THz(i)=[];
-    y_THz(i)=[];
-    x_path(i)=[];
-    y_path(i)=[];
-    figure(1)
-    imshow(img_THz);
-    set(gcf,'position',[0 0 775 1000]);
-    Mesh_THz = delaunayTriangulation(x_THz',y_THz');
-    Mesh_THz = Mesh_THz(:,:);
-    hold on, triplot(Mesh_THz,x_THz,y_THz,'Color', [0.4 0.4 0.4],'linewidth',3), hold off
-    figure(2)
-    imshow(img_path);
-    set(gcf,'position',[775 0 775 1000]);
-    Mesh_Path = Mesh_THz(:,:);
-    hold on, triplot(Mesh_Path,x_path,y_path,'Color', [0.4 0.4 0.4],'linewidth',3), hold off
-    if (size(x_THz,2)>3)
-        pol_tot = polyshape(x_path(Mesh_Path(1,:)),y_path(Mesh_Path(1,:)));
-        i = 2;
-        int_ind = 0;
-        while i <= size(Mesh_Path,1)
-            pol_add = polyshape(x_path(Mesh_Path(i,:)),y_path(Mesh_Path(i,:)));
-            int = intersect(pol_tot,pol_add);
-            if int.NumRegions == 0
-                pol_tot = union(pol_tot,pol_add);
-                i = i + 1;
-            else
-                int_ind = 1;
-                break;
+    if(op==0)
+        if keep==0
+            [Path_img_name,path_Path] = uigetfile('*.png','SELECT THE PATHOLOGY IMAGE');
+            Path_img_name=strcat(path_Path,Path_img_name);
+            if isempty(Path_img_name)
+                return
+            end
+            [THz_img_name,path_THz] = uigetfile('*.png','SELECT THE TERAHERTZ IMAGE',path_Path);
+            THz_img_name=strcat(path_THz,THz_img_name);
+            if isempty(THz_img_name)
+                return
+            end
+            try
+                % Pathology Mask
+                img_path=imread(Path_img_name);
+                choice1='';
+                while isempty(choice1)
+                    choice1 = inputdlg('SCALE PATHOLOGY RESOLUTION BY: ');
+                end
+                choice1=str2num(cell2mat(choice1));
+                if(choice1~=0)
+                    img_path=imresize(img_path,choice1);
+                end
+                % Tissue Mask
+                img_THz=imread(THz_img_name); %+200
+                choice2='';
+                while isempty(choice2)
+                    choice2 = inputdlg('SCALE THZ RESOLUTION BY: ');
+                end
+                choice2=str2num(cell2mat(choice2));
+                if(choice2~=0)
+                    img_THz=imresize(img_THz,choice2);
+                end
+                images=struct;
+                images.a=img_path;
+                images.b=img_THz;
+            catch
+                ErrorMessage=lasterr;
+                errordlg(ErrorMessage);
+                return
             end
         end
-        if int_ind == 1
-            waitfor(msgbox('MESH OVERLAP'));
+        try
+            show_images(img_path,img_THz);
+        catch
+            ErrorMessage=lasterr;
+            errordlg(ErrorMessage);
+            return
         end
-        del='';
-        while isempty(del)
-            del = questdlg('KEEP DELETING?', ...
-                'DELETE CONTROL POINTS', ...
+        if strcmp(choice,'CREATE MESH')
+            Meshes=create_mesh(images);
+        else
+            load_op='';
+            while isempty(load_op)
+                load_op = questdlg('LOAD PRIOR MESH?', ...
+                    'LOAD', ...
+                    'YES','NO','NO');
+            end
+            if(strcmp(load_op,'YES'))
+                while filename==0
+                    [filename,path] = uigetfile('*.mat','SELECT THE PRIOR DATA');
+                    filename=strcat(path,filename);
+                end
+                try
+                    Meshes=[];
+                    load(filename);
+                catch
+                    ErrorMessage=lasterr;
+                    errordlg(ErrorMessage);
+                    return
+                end
+            end
+            %verify the variables are included
+            try
+                Meshes;
+            catch
+                ErrorMessage=lasterr;
+                errordlg('THERE ARE SOME MISSING VARIABLES. TRY CREATING A NEW MESH OR LOADING A NEW SET OF DATA');
+                return
+            end
+            if strcmp(choice,'MORPH PATHOLOGY')
+                morphed_path=Mesh_morphing(images,Meshes);
+                choice='';
+                beep
+                while isempty(choice)
+                    choice = questdlg('CREATE MATRIX?', ...
+                        'MORPHING', ...
+                        'YES','NO','NO');
+                end
+                if (strcmp(choice,'YES'))
+                    final=classification(images,morphed_path);
+                    figure(3)
+                    imshow(final.b);
+                else
+                    figure(3)
+                    imshow(morphed_path);
+                end
+                set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
+            else
+                choice2='';
+                while isempty(choice2)
+                    choice2 = questdlg('DO YOU NEED TO?', ...
+                        'MODIFY MESH', ...
+                        'ADD A NEW POINT','DELETE AN EXISTING POINT','DELETE AN EXISTING POINT');
+                end
+                if (strcmp(choice2,'DELETE AN EXISTING POINT'))
+                    Meshes=delete_from_mesh(images,Meshes);
+                else
+                    Meshes=add_from_mesh(images,Meshes);
+                end
+            end
+        end
+        saveop='';
+        while isempty(saveop)
+            saveop = questdlg('SAVE PROGRESS?', ...
+                'MORPHING', ...
                 'YES','NO','NO');
         end
-    else
-        waitfor(msgbox(sprintf('YOU HAVE REACH THE MINIMUM NUMBER OF POINTS REQUIRED TO FORM A TRIANGULATION')));
-        del='NO';
+        if (strcmp(saveop,'YES'))
+            [filename,path] = uiputfile('*.mat','SAVE MESHES AS:');
+            path1=strcat(path,filename);
+            if isempty(filename)
+                return
+            end
+            save(path1,'Meshes');
+            if (isempty(final)==0)
+                [filename,path] = uiputfile('*.mat','SAVE MATRIX AS:',path);
+                if isempty(filename)
+                    return
+                end
+                path1=strcat(path,filename);
+                matrix=final.a;
+                matrix_key_tissue=final.c;
+                matrix_key_number=final.d;
+                save(path1,'matrix','matrix_key_tissue','matrix_key_number');
+                [filename,path] = uiputfile('*.png','SAVE MORPHED PATHOLOGY AS:',path);
+                if isempty(filename)
+                    return
+                end
+                path1=strcat(path,filename);
+                imwrite(final.b,path1);
+            else
+                if(isempty(morphed_path)==0)
+                    [filename,path] = uiputfile('*.png','SAVE MORPHED PATHOLOGY AS:',path);
+                    if isempty(filename)
+                        return
+                    end
+                    path1=strcat(path,filename);
+                    imwrite(morphed_path,path1);
+                end
+            end
+        end
+        choice='';
+        while isempty(choice)
+            choice = questdlg('CONTINUE?', ...
+                'MORPHING', ...
+                'YES','NO','NO');
+        end
+        if (strcmp(choice,'NO'))
+            op=1;
+            close all
+        else
+            choice='';
+            while isempty(choice)
+                choice = questdlg('KEEP THE CURRENT DATA?', ...
+                    'MORPHING', ...
+                    'YES','NO','NO');
+            end
+            if (strcmp(choice,'NO'))
+                clear;
+                Path_img_name=0;
+                THz_img_name=0;
+                op=0;
+                final=[];
+                morphed_path=[];
+                keep=0;
+            else
+                keep=1;
+            end
+        end
+        
     end
-end
-%save and return structure
-Meshes=struct;
-Meshes.a=x_THz;
-Meshes.b=y_THz;
-Meshes.c=Mesh_THz;
-Meshes.d=x_path;
-Meshes.e=y_path;
-Meshes.f=Mesh_Path;
 end
